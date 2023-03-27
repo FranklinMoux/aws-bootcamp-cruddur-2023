@@ -2,29 +2,33 @@ version: "3.8"
 services:
   backend-flask:
     environment:
-      # Local DB Connection
-      # CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
+     
+      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
       
-      # Prod DB Connection
-      CONNECTION_URL: "${PROD_CONNECTION_URL}"
+    # Prod DB Connection
+    # CONNECTION_URL: "${PROD_CONNECTION_URL}"
       
       # Codespaces BACKEND AND FRONTEND
       FRONTEND_URL: "https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
       BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
-      # Gitpod BACKEND AND FRONTEND
+    # Gitpod BACKEND AND FRONTEND
     # FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
     # BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    
+    # Codespace X-Ray
+    # AWS_XRAY_URL: "*${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}*"
+    # Gitpod X-Ray
+      AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
 
       OTEL_SERVICE_NAME: "backend-flask"
       OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
       OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
 
-       # Codespaces X-Ray
-     # AWS_XRAY_URL: "*${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}*"
-       # Gitpod X-Ray
-     # AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
-     
-     # AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+    # Codespaces X-Ray
+    # AWS_XRAY_URL: "*${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}*"
+    # Gitpod X-Ray
+      AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
 
       AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
       AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
@@ -38,57 +42,91 @@ services:
       - "4567:4567"
     volumes:
       - ./backend-flask:/backend-flask
+      
+    # healthcheck:
+    # test: ["CMD-SHELL", "curl -f http://localhost:4567 || exit 1"]
+    # interval: 1m15s
+    # timeout: 10s
+    # retries: 3
+    # start_period: 40s
+      
   frontend-react-js:
     environment:
-      # Codespaces REACT BACKEND
-      REACT_APP_BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
-      # Gitpod REACT BACKEND
-     # REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    # Codespaces REACT BACKEND
+    # REACT_APP_BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+    # Gitpod REACT BACKEND
+      REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
       
       REACT_APP_AWS_PROJECT_REGION: "${AWS_DEFAULT_REGION}"
+      REACT_AWS_PROJECT_REGION: "${AWS_DEFAULT_REGION}"
       REACT_APP_AWS_COGNITO_REGION: "${AWS_DEFAULT_REGION}"
       REACT_APP_AWS_USER_POOLS_ID: "${AWS_USER_POOLS_ID}"
       REACT_APP_CLIENT_ID: "${APP_CLIENT_ID}"
+      
     build: ./frontend-react-js
     ports:
       - "3000:3000"
     volumes:
       - ./frontend-react-js:/frontend-react-js
-#   db:
-#     image: postgres:13-alpine
-#     restart: always
-#     environment:
-#       - POSTGRES_USER=postgres
-#       - POSTGRES_PASSWORD=password
-#     ports:
-#       - '5432:5432'
-#     volumes: 
-#       - db:/var/lib/postgresql/data
-  # dynamodb-local:
-  #   # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
-  #   # We needed to add user:root to get this working.
-  #   user: root
-  #   command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-  #   image: "amazon/dynamodb-local:latest"
-  #   container_name: dynamodb-local
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - "./docker/dynamodb:/home/dynamodblocal/data"
-  #   working_dir: /home/dynamodblocal
-  # xray-daemon:
-  #   image: "amazon/aws-xray-daemon"
-  #   environment:
-  #     AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-  #     AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
-  #     AWS_REGION: "${AWS_DEFAULT_REGION}"
-  #   command:
-  #     - "xray -o -b xray-daemon:2000"
-  #   ports:
-  #     - 2000:2000/udp
+      
+    # healthcheck:
+    #   #test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+    #   interval: 1m30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 20s 
+    
+  dynamodb-local:
+    # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
+    # We needed to add user:root to get this working.
+    user: root
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+    #Postgres SQL
+     db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+  xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_REGION: "ap-south-1"
+    command:
+      - "xray -o -b xray-daemon:2000"
+    ports:
+      - 2000:2000/udp
+   
+    # otel Collector
+   #otel-collector:
+    # image: otel/opentelemetry-collector
+    # command: [--config=/etc/otel-collector-config.yaml]
+    # volumes:
+    #   - ./frontend-react-js/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    # ports:
+    #  - 1888:1888 # pprof extension
+    #   - 8888:8888 # Prometheus metrics exposed by the collector
+    #   - 8889:8889 # Prometheus exporter metrics
+    #   - 13133:13133 # health_check extension
+    #   - 4317:4317 # OTLP gRPC receiver
+    #   - 4318:4318 # OTLP http receiver
+    #   - 55679:55679 # zpages extension
+      
 
-# the name flag is a hack to change the default prepend folder
-# name when outputting the image names
+    # the name flag is a hack to change the default prepend folder name when outputting the image names                                   
 networks: 
   internal-network:
     driver: bridge
