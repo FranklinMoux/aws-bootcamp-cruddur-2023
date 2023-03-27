@@ -1,24 +1,5 @@
 tasks:
-  - name: Update OS and NPM
-  - init: |
-      sudo apt update -y
-      sudo apt upgrade -y
-      sudo apt autoremove -y
-      npm update -g 
-      npm install -g npm@latest
-#      gp sync-done apt-npm
-    command: |
-          cd $THEIA_WORKSPACE_ROOT/backend-flask
-          pip3 install -r requirements.txt
-          cd $THEIA_WORKSPACE_ROOT/frontend-react-js
-          npm i
-          cd $THEIA_WORKSPACE_ROOT
-          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
-          echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
-          sudo apt update -y
-          sudo apt install -y postgresql-client-13 libpq-dev
-
-  - name: Install aws-cli
+  - name: aws-cli
     env:
       AWS_CLI_AUTO_PROMPT: on-partial
     init: |
@@ -28,40 +9,31 @@ tasks:
       sudo ./aws/install
       cd $THEIA_WORKSPACE_ROOT
       
-    command: |
-          export GITPOD_IP=$(curl ifconfig.me)
-          source $THEIA_WORKSPACE_ROOT/backend-flask/bin/rds-update-sg-rule-gitpod
-          
   - name: react-js
     command: |
-       cd frontend-react-js
-       npm i
-    
-     
-  
-#   - name: Initialize Backend and Frontend
-#     init: |
-#       gp sync-await apt-npm
-#       cd $THEIA_WORKSPACE_ROOT/backend-flask
-#       pip3 install -r requirements.txt
-#       cd $THEIA_WORKSPACE_ROOT/frontend-react-js
-#       npm i
-#       cd $THEIA_WORKSPACE_ROOT
-  
-#   - name: postgres
-#     init: |
-#       gp sync-await apt-npm
-#       curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
-#       echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
-#       sudo apt update -y
-#       sudo apt install -y postgresql-client-13 libpq-dev
-    
+      cd frontend-react-js
+      npm i
+      
+  - name: flask
+    command: |
+      cd backend-flask
+      pip install -r requirements.txt
+      
+  - name: postgres
+    init: |
+      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+      sudo apt update
+      sudo apt install -y postgresql-client-13 libpq-dev
+      
+    command: |
+      export GITPOD_IP=$(curl ifconfig.me)
+      source  "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds-update-sg-rule"
+      
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
     - cweijan.vscode-postgresql-client2
-    - ms-azuretools.vscode-docker
-    - ms-python.python
 
 ports:
   - name: frontend
