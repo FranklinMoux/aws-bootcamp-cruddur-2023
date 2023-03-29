@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 // [TODO] Authenication
 import { Auth } from 'aws-amplify';
 
-
 export default function SignupPage() {
 
   // Username is Eamil
@@ -24,9 +23,9 @@ export default function SignupPage() {
         username: email,
         password: password,
         attributes: {
-          name: name,
-          email: email,
-          preferred_username: username,
+            name: name,
+            email: email,
+            preferred_username: username,
         },
         autoSignIn: { // optional - enables auto sign in after user is confirmed
           enabled: true,
