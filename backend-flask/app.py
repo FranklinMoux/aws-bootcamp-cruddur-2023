@@ -117,7 +117,6 @@ def rollbar_test():
     rollbar.report_message('Hello World!', 'warning')
     return "Hello World!"
 
-
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
   user_handle  = 'andrewbrown'
@@ -163,8 +162,9 @@ def data_home():
     user_id = claims["username"]
     # authenticated request
     app.logger.debug('authenticated')
+    app.logger.debug(claims)
     app.logger.debug(claims["username"])
-    data = HomeActivities.run(cognito_user_id=user_id)
+    data = HomeActivities.run(cognito_user_id=claims['username'])
   except TokenVerifyError as e:
     # unauthenticated request
     app.logger.debug(e)
