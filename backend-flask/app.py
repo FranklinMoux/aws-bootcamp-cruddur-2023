@@ -19,6 +19,7 @@ from services.show_activity import *
 from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
 
 #Rollbar modules and imports
+import os
 import rollbar
 import rollbar.contrib.flask
 from flask import got_request_exception
