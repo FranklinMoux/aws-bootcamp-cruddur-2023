@@ -16,7 +16,7 @@ from services.create_message import *
 from services.show_activity import *
 
 # Flask-AWSCognito Auth
-from lib.cognito_jwt_token import CognitoJwtToken, TokenVerifyError, FlaskAWSCognitoError, extract_access_token
+from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
 
 #Rollbar modules and imports
 import rollbar
