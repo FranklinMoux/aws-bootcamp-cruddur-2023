@@ -154,8 +154,8 @@ def data_create_message():
   return
 
 @app.route("/api/activities/home", methods=['GET'])
-# @xray_recorder.capture('activities_home')
-# @aws_auth.authentication_required
+@xray_recorder.capture('activities_home')
+ @aws_auth.authentication_required
 def data_home():
   access_token = extract_access_token(request.headers)
   try:
@@ -170,7 +170,6 @@ def data_home():
     app.logger.debug(e)
     app.logger.debug('unauthenticated')
     data = HomeActivities.run()
-
   return data, 200
 
 @app.route("/api/activities/notifications", methods=['GET'])
@@ -182,7 +181,7 @@ def data_notifications():
   return data, 200
 
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
-# @xray_recorder.capture('user_activities')
+@xray_recorder.capture(''activities_users')
 def data_handle(handle):
   model = UserActivities.run(handle)
   if model['errors'] is not None:
