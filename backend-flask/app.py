@@ -50,11 +50,6 @@ cognito_jwt_token = CognitoJwtToken(
   region=os.getenv("AWS_DEFAULT_REGION")
 )
 
-# Cognito Token Verification instance
-cognito_token_verify = CognitoJwtToken(user_pool_id=cognito_user_pool_id,
-  user_pool_client_id=cognito_user_pool_client_id,
-  region=region)
-
 # Initialize tracing and an exporter that can send data to Honeycomb
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
