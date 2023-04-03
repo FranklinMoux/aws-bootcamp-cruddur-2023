@@ -85,7 +85,7 @@ app = Flask(__name__)
 cognito_token_verfication = CognitoTokenVerification(
   user_pool_id=os.getenv('AWS_COGNITO_USER_POOLS_ID'), 
   user_pool_client_id=os.getenv('AWS_COGNITO_CLIENT_ID'), 
-  region=os.getenv('AWS_DEFAULT_REGION'):
+  region=os.getenv('AWS_DEFAULT_REGION')
 )
 
 # X-RAY ----------
