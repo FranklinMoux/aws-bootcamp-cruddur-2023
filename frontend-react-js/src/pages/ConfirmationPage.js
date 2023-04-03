@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom';
 import {ReactComponent as Logo} from '../components/svg/logo.svg';
 
 // [TODO] Authenication
+// import Cookies from 'js-cookie'
 import { Auth } from 'aws-amplify';
-
 export default function ConfirmationPage() {
   const [email, setEmail] = React.useState('');
   const [code, setCode] = React.useState('');
@@ -26,16 +26,18 @@ export default function ConfirmationPage() {
     try {
       await Auth.resendSignUp(email);
       console.log('code resent successfully');
+      console.log('email', email);
       setCodeSent(true)
+      // setCodeSent(true)
     } catch (err) {
       // does not return a code
       // does cognito always return english
       // for this to be an okay match?
       console.log(err)
       if (err.message == 'Username cannot be empty'){
-        setCognitoErrors("You need to provide an email in order to send Resend Activiation Code")   
+        setErrors("You need to provide an email in order to send Resend Activiation Code")   
       } else if (err.message == "Username/client id combination not found."){
-        setCognitoErrors("Email is invalid or cannot be found.")   
+        setErrors("Email is invalid or cannot be found.")   
       }
     }
   }
