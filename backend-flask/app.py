@@ -124,13 +124,13 @@ frontend = os.getenv('FRONTEND_URL')
 backend = os.getenv('BACKEND_URL')
 origins = [frontend, backend]
 
-CORS(
-    app,
-    resources={r"/api/*": {"origins": origins}},
-    expose_headers="location,link",
-    allow_headers="content-type,if-modified-since, traceparent",
-    methods="OPTIONS,GET,HEAD,POST"
-)
+#CORS(
+    #app,
+    #resources={r"/api/*": {"origins": origins}},
+    #expose_headers="location,link",
+    #allow_headers="content-type,if-modified-since, traceparent",
+    #methods="OPTIONS,GET,HEAD,POST"
+#)
 
 #rollbar test
 @app.route('/rollbar/test')
