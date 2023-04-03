@@ -2,7 +2,9 @@ from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
 import os
+import sys 
 
+from services.notifications_activities import *
 from services.home_activities import *
 from services.user_activities import *
 from services.create_activity import *
@@ -32,8 +34,8 @@ from flask import got_request_exception
 # Honeycomb
 
 # X-RAY ----------
-#from aws_xray_sdk.core import xray_recorder
-#from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
 # cloudwatch logs ----
 import watchtower
@@ -41,11 +43,11 @@ import logging
 from time import strftime
 
 # ROLLBAR ----
-#from time import strftime
-#import os
-#import rollbar
-#import rollbar.contrib.flask
-#from flask import got_request_exception
+from time import strftime
+import os
+import rollbar
+import rollbar.contrib.flask
+from flask import got_request_exception
 
 # Configuring Logger to Use CloudWatch
 LOGGER = logging.getLogger(__name__)
@@ -93,7 +95,6 @@ cognito_token_verfication = CognitoTokenVerification(
 # Intialize automatic instrumentation with flask
 RequestsInstrumentor().instrument()
 # The above is can be removed - line 56
-=======
 # X-RAY ----------
 # XRayMiddleware(app, xray_recorder)
 
