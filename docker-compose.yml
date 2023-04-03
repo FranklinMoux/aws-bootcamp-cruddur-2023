@@ -2,47 +2,34 @@ version: "3.8"
 services:
   backend-flask:
     environment:
-    
-    # Prod DB Connection
-      #CONNECTION_URL: "${PROD_CONNECTION_URL}"
-      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
-      
-    # Codespaces BACKEND AND FRONTEND
-      #FRONTEND_URL: "https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
-      #BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
-    # Gitpod BACKEND AND FRONTEND
       FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
       BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
-    
-    # Codespace X-Ray
-    # AWS_XRAY_URL: "*${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}*"
-    # Gitpod X-Ray
-      AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
-      
-      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+      # CONNECTION_URL: "${PROD_CONNECTION_URL}"
+      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
       OTEL_SERVICE_NAME: "backend-flask"
       OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
       OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
-
+      AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
       AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
       AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       ROLLBAR_ACCESS_TOKEN: "${ROLLBAR_ACCESS_TOKEN}"
-      AWS_COGNITO_USER_POOL_ID: "${AWS_USER_POOLS_ID}"
-      AWS_COGNITO_USER_POOL_CLIENT_ID: "${APP_CLIENT_ID}"
-
+      AWS_COGNITO_USER_POOL_ID: "${AWS_COGNITO_USER_POOL_ID}"
+      AWS_COGNITO_USER_POOL_CLIENT_ID: "${AWS_COGNITO_USER_POOL_CLIENT_ID}"
+      # AWS_ENDPOINT_URL: "http://dynamodb-local:8000"
+      
     build: ./backend-flask
     ports:
       - "4567:4567"
     volumes:
       - ./backend-flask:/backend-flask
-      
     # healthcheck:
-    # test: ["CMD-SHELL", "curl -f http://localhost:4567 || exit 1"]
-    # interval: 1m15s
-    # timeout: 10s
-    # retries: 3
-    # start_period: 40s
+    #   test: ["CMD-SHELL", "curl -f https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}/api/activities/home || exit 1"]
+    #   interval: 15m
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 20s
       
   frontend-react-js:
     environment:
