@@ -2,12 +2,12 @@ version: "3.8"
 services:
   backend-flask:
     environment:
-  
-      
+    
     # Prod DB Connection
-      CONNECTION_URL: "${PROD_CONNECTION_URL}"
+      #CONNECTION_URL: "${PROD_CONNECTION_URL}"
+      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
       
-      # Codespaces BACKEND AND FRONTEND
+    # Codespaces BACKEND AND FRONTEND
       #FRONTEND_URL: "https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
       #BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
     # Gitpod BACKEND AND FRONTEND
@@ -93,6 +93,7 @@ services:
       - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data
+      
   xray-daemon:
     image: "amazon/aws-xray-daemon"
     environment:
