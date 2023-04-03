@@ -137,7 +137,7 @@ cors = CORS(
 def rollbar_test():
     rollbar.report_message('Hello World!', 'warning')
     return "Hello World!"
-=======
+
 # @app.after_request
 def after_request(response):
     timestamp = strftime('[%Y-%b-%d %H:%M]')
