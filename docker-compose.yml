@@ -3,13 +3,13 @@ services:
   backend-flask:
     environment:
       # Local DDB
-      AWS_ENDPOINT_URL: "http://dynamodb-local:8000"
+      #AWS_ENDPOINT_URL: "http://dynamodb-local:8000"
       
       # Local DB Connection
-      # CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
+      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
       
       # Prod DB Connection
-      CONNECTION_URL: "${PROD_CONNECTION_URL}"
+      #CONNECTION_URL: "${PROD_CONNECTION_URL}"
 
       # Gitpod BACKEND AND FRONTEND
       FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
